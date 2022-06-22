@@ -97,10 +97,16 @@ class PocketToWordpress
             return;
         }
 
-        $this->access_token = get_option($this->prefix . 'access', true);
+        $this->access_token = get_option($this->prefix . 'access');
 
         if ($_GET['reset'] === 'true') {
             delete_option($this->prefix . 'code');
+        }
+
+        $auth_error = get_option('ptw_auth_error');
+        if(!empty($auth_error)){
+            var_dump('error', $auth_error);
+            die;
         }
 
         $this->auth_pocket();
@@ -125,7 +131,7 @@ class PocketToWordpress
     {
         if (empty($this->access_token)) {
 
-            $pwt_code = get_option($this->prefix . 'code', true);
+            $pwt_code = get_option($this->prefix . 'code');
 
             if (empty($pwt_code)) {
 
