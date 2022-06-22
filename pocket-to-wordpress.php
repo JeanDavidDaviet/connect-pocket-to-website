@@ -97,12 +97,10 @@ class PocketToWordpress
             return;
         }
 
-        $current_user = wp_get_current_user();
-
-        $this->access_token = get_user_meta($current_user->ID, $this->prefix . 'access', true);
+        $this->access_token = get_option($this->prefix . 'access', true);
 
         if ($_GET['reset'] === 'true') {
-            delete_user_meta($current_user->ID, $this->prefix . 'code');
+            delete_option($this->prefix . 'code');
         }
 
         $this->request_pocket();
@@ -127,8 +125,7 @@ class PocketToWordpress
     {
         if (empty($this->access_token)) {
 
-            $current_user = wp_get_current_user();
-            $pwt_code = get_user_meta($current_user->ID, $this->prefix . 'code', true);
+            $pwt_code = get_option($this->prefix . 'code', true);
 
             if (empty($pwt_code)) {
 
@@ -136,7 +133,7 @@ class PocketToWordpress
                 $response = wp_remote_retrieve_body($request);
 
                 $code = explode('=', $response);
-                update_user_meta($current_user->ID, $this->prefix . 'code', $code[1]);
+                update_option($this->prefix . 'code', $code[1]);
 
             } else {
 
