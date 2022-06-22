@@ -48,6 +48,8 @@ class PocketToWordpress
 
         add_action('admin_menu', [$this, 'register_settings_page']);
         add_action('admin_init', [$this, 'admin_init']);
+
+        add_shortcode('pocket-to-wordpress', [$this, 'pwt_shortcode']);
     }
 
     public function admin_init()
@@ -106,7 +108,7 @@ class PocketToWordpress
             $request = wp_remote_get($pwt_url . '?path=get&access_token=' . $access_token);
             $response = wp_remote_retrieve_body($request);
             $list = (array) json_decode($response);
-            update_user_meta($current_user->ID, $this->prefix . 'list', $list);
+            update_option($this->prefix . 'list', $list);
         }
 
         ?>
@@ -121,6 +123,32 @@ class PocketToWordpress
             ?>
         </div>
         <?php
+    }
+
+    public function pwt_shortcode()
+    {
+        $html = '';
+        $list = get_option($this->prefix . 'list');
+        if (isset($list['list'])) {
+            $list = $list['list'];
+            ob_start();
+            ?>
+            <ul>
+                <?php
+                foreach ($list as $item) {
+                    ?>
+                    <li>
+                        <a href="<?php echo $item->resolved_url; ?>"><?php echo $item->resolved_title; ?></a>
+                    </li>
+                    <?php
+                }
+                ?>
+            </ul>
+            <?php
+            $html = ob_get_clean();
+        }
+
+        return $html;
     }
 
     public function activate()
