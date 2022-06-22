@@ -34,7 +34,7 @@ if(!isset($output["access_token"])){
         'message' => $error_message,
     ]);
 }else{
-    update_option('ptw_access', $output["access_token"]);
+    update_option('ptw_access_token', $output["access_token"]);
     update_option('ptw_username', $output["username"]);
 }
 

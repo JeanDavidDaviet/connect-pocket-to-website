@@ -53,6 +53,13 @@ class PocketToWordpress
      *
      * @var string
      */
+    private $pwt_code;
+
+    /**
+     * This user access_token
+     *
+     * @var string
+     */
     private $access_token;
 
     /**
@@ -73,6 +80,8 @@ class PocketToWordpress
         add_shortcode('pocket-to-wordpress', [$this, 'pwt_shortcode']);
 
         $this->redirect_uri = urlencode(plugin_dir_url(__FILE__) . 'callback.php');
+        $this->pwt_code = get_option($this->prefix . 'code');
+        $this->access_token = get_option($this->prefix . 'access_token');
     }
 
     public function admin_init()
@@ -97,26 +106,34 @@ class PocketToWordpress
             return;
         }
 
-        $this->access_token = get_option($this->prefix . 'access');
-
-        if ($_GET['reset'] === 'true') {
-            delete_option($this->prefix . 'code');
-        }
-
         $auth_error = get_option('ptw_auth_error');
-        if(!empty($auth_error)){
-            var_dump('error', $auth_error);
+        if ($_GET['reset'] === 'true' || !empty($auth_error)) {
+            delete_option($this->prefix . 'code');
+            delete_option($this->prefix . 'access_token');
+            delete_option($this->prefix . 'auth_error');
+            // todo add notification of failure
+            wp_redirect(admin_url('options-general.php?page=pocket-to-wordpress'));
             die;
         }
 
-        $this->auth_pocket();
+        if(isset($_GET['login'])){
+            $this->request_pocket();
+            $this->auth_pocket();
+        }
 
         $list = $this->fetch_pocket();
 
         ?>
         <div class="wrap">
             <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+            <?php if(empty($this->access_token)): ?>
+            <form action="">
+                <input type="submit" value="Login with Pocket">
+                <input type="hidden" name="login" value="true">
+                <input type="hidden" name="page" value="pocket-to-wordpress">
+            </form>
             <?php
+            endif;
 
             if ($list) {
                 var_dump($list);
@@ -127,27 +144,28 @@ class PocketToWordpress
         <?php
     }
 
+    private function request_pocket(): void
+    {
+        if (empty($this->access_token) && empty($this->pwt_code)) {
+
+            $response = $this->get_from_pocket('request', [
+                'redirect_uri' => $this->redirect_uri
+            ]);
+
+            $code = explode('=', $response);
+            $this->pwt_code = $code[1];
+            update_option($this->prefix . 'code', $this->pwt_code);
+
+        }
+    }
+
     private function auth_pocket(): void
     {
-        if (empty($this->access_token)) {
+        if (empty($this->access_token) && !empty($this->pwt_code)) {
 
-            $pwt_code = get_option($this->prefix . 'code');
+            wp_redirect('https://getpocket.com/auth/authorize?request_token=' . $this->pwt_code . '&redirect_uri=' . $this->redirect_uri);
+            die;
 
-            if (empty($pwt_code)) {
-
-                $response = $this->get_from_pocket('request', [
-                    'redirect_uri' => $this->redirect_uri
-                ]);
-
-                $code = explode('=', $response);
-                update_option($this->prefix . 'code', $code[1]);
-
-            } else {
-
-                wp_redirect('https://getpocket.com/auth/authorize?request_token=' . $pwt_code . '&redirect_uri=' . $this->redirect_uri);
-                die;
-
-            }
         }
     }
 
