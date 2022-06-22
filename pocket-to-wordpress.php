@@ -144,10 +144,17 @@ class PocketToWordpress
         }
     }
 
-    public function fetch_pocket()
+    public function fetch_pocket($access_token = '', $options = [])
     {
-        if (! empty($this->access_token)) {
-            $request = wp_remote_get($this->pwt_url . '?path=get&access_token=' . $this->access_token);
+        if (empty($access_token)){
+            $access_token = $this->access_token;
+        }
+        if (!empty($access_token)) {
+            $params = array_merge([
+                'path' => 'get',
+                'access_token' => $access_token
+            ], $options);
+            $request = wp_remote_get($this->pwt_url . '?' . http_build_query($params));
             $response = wp_remote_retrieve_body($request);
             $list = (array) json_decode($response);
             update_option($this->prefix . 'list', $list);
@@ -156,10 +163,11 @@ class PocketToWordpress
         return [];
     }
 
-    public function pwt_shortcode()
+    public function pwt_shortcode($attributes)
     {
+        $access_token = get_option($this->prefix . 'access_token');
+        $list = $this->fetch_pocket($access_token, $attributes);
         $html = '';
-        $list = get_option($this->prefix . 'list');
         if (isset($list['list'])) {
             $list = $list['list'];
             ob_start();
