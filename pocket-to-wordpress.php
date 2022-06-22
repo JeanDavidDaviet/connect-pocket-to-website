@@ -103,7 +103,7 @@ class PocketToWordpress
             delete_option($this->prefix . 'code');
         }
 
-        $this->request_pocket();
+        $this->auth_pocket();
 
         $list = $this->fetch_pocket();
 
@@ -121,7 +121,7 @@ class PocketToWordpress
         <?php
     }
 
-    private function request_pocket(): void
+    private function auth_pocket(): void
     {
         if (empty($this->access_token)) {
 
@@ -129,8 +129,9 @@ class PocketToWordpress
 
             if (empty($pwt_code)) {
 
-                $request = wp_remote_get($this->pwt_url . '?path=request&redirect_uri=' . $this->redirect_uri);
-                $response = wp_remote_retrieve_body($request);
+                $response = $this->get_from_pocket('request', [
+                    'redirect_uri' => $this->redirect_uri
+                ]);
 
                 $code = explode('=', $response);
                 update_option($this->prefix . 'code', $code[1]);
@@ -144,18 +145,24 @@ class PocketToWordpress
         }
     }
 
+    private function get_from_pocket($path, $params)
+    {
+        $params = array_merge([
+            'path' => $path,
+        ], $params);
+        $request = wp_remote_get($this->pwt_url . '?' . http_build_query($params));
+        return wp_remote_retrieve_body($request);
+    }
+
     public function fetch_pocket($access_token = '', $options = [])
     {
         if (empty($access_token)){
             $access_token = $this->access_token;
         }
         if (!empty($access_token)) {
-            $params = array_merge([
-                'path' => 'get',
+            $response = $this->get_from_pocket('get', array_merge([
                 'access_token' => $access_token
-            ], $options);
-            $request = wp_remote_get($this->pwt_url . '?' . http_build_query($params));
-            $response = wp_remote_retrieve_body($request);
+            ], $options));
             $list = (array) json_decode($response);
             update_option($this->prefix . 'list', $list);
             return $list;
