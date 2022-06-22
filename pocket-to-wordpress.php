@@ -35,6 +35,27 @@ class PocketToWordpress
     private $prefix = 'ptw_';
 
     /**
+     * This plugin server's url
+     *
+     * @var string
+     */
+    private $pwt_url = 'https://jeandaviddaviet.fr/pocket';
+
+    /**
+     * This plugin redirect_uri url
+     *
+     * @var string
+     */
+    private $redirect_uri;
+
+    /**
+     * This user access_token
+     *
+     * @var string
+     */
+    private $access_token;
+
+    /**
      * The capability required to access this plugin's settings.
      *
      * @var string
@@ -50,6 +71,8 @@ class PocketToWordpress
         add_action('admin_init', [$this, 'admin_init']);
 
         add_shortcode('pocket-to-wordpress', [$this, 'pwt_shortcode']);
+
+        $this->redirect_uri = urlencode(plugin_dir_url(__FILE__) . 'callback.php');
     }
 
     public function admin_init()
@@ -75,41 +98,16 @@ class PocketToWordpress
         }
 
         $current_user = wp_get_current_user();
-        $pwt_url = 'https://jeandaviddaviet.fr/pocket';
 
-        $redirect_uri = urlencode(plugin_dir_url(__FILE__) . 'callback.php');
-
-        $access_token = get_user_meta($current_user->ID, $this->prefix . 'access', true);
+        $this->access_token = get_user_meta($current_user->ID, $this->prefix . 'access', true);
 
         if ($_GET['reset'] === 'true') {
             delete_user_meta($current_user->ID, $this->prefix . 'code');
         }
 
-        if (empty($access_token)) {
+        $this->request_pocket();
 
-            $pwt_code = get_user_meta($current_user->ID, $this->prefix . 'code', true);
-
-            if (empty($pwt_code)) {
-
-                $request = wp_remote_get($pwt_url . '?path=request&redirect_uri=' . $redirect_uri);
-                $response = wp_remote_retrieve_body($request);
-
-                $code = explode('=', $response);
-                update_user_meta($current_user->ID, $this->prefix . 'code', $code[1]);
-
-            } else {
-                wp_redirect('https://getpocket.com/auth/authorize?request_token=' . $pwt_code . '&redirect_uri=' . $redirect_uri);
-                die;
-            }
-        }
-
-        if (! empty($access_token)) {
-
-            $request = wp_remote_get($pwt_url . '?path=get&access_token=' . $access_token);
-            $response = wp_remote_retrieve_body($request);
-            $list = (array) json_decode($response);
-            update_option($this->prefix . 'list', $list);
-        }
+        $list = $this->fetch_pocket();
 
         ?>
         <div class="wrap">
@@ -123,6 +121,42 @@ class PocketToWordpress
             ?>
         </div>
         <?php
+    }
+
+    private function request_pocket(): void
+    {
+        if (empty($this->access_token)) {
+
+            $current_user = wp_get_current_user();
+            $pwt_code = get_user_meta($current_user->ID, $this->prefix . 'code', true);
+
+            if (empty($pwt_code)) {
+
+                $request = wp_remote_get($this->pwt_url . '?path=request&redirect_uri=' . $this->redirect_uri);
+                $response = wp_remote_retrieve_body($request);
+
+                $code = explode('=', $response);
+                update_user_meta($current_user->ID, $this->prefix . 'code', $code[1]);
+
+            } else {
+
+                wp_redirect('https://getpocket.com/auth/authorize?request_token=' . $pwt_code . '&redirect_uri=' . $this->redirect_uri);
+                die;
+
+            }
+        }
+    }
+
+    public function fetch_pocket()
+    {
+        if (! empty($this->access_token)) {
+            $request = wp_remote_get($this->pwt_url . '?path=get&access_token=' . $this->access_token);
+            $response = wp_remote_retrieve_body($request);
+            $list = (array) json_decode($response);
+            update_option($this->prefix . 'list', $list);
+            return $list;
+        }
+        return [];
     }
 
     public function pwt_shortcode()
