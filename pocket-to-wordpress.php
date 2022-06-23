@@ -107,7 +107,7 @@ class PocketToWordpress
         }
 
         $auth_error = get_option('ptw_auth_error');
-        if ($_GET['reset'] === 'true' || !empty($auth_error)) {
+        if ($_GET['logout'] === 'true' || !empty($auth_error)) {
             delete_option($this->prefix . 'code');
             delete_option($this->prefix . 'access_token');
             delete_option($this->prefix . 'auth_error');
@@ -127,16 +127,26 @@ class PocketToWordpress
         <div class="wrap">
             <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
             <?php if(empty($this->access_token)): ?>
-            <form action="">
-                <input type="submit" value="Login with Pocket">
-                <input type="hidden" name="login" value="true">
+                <form>
+                    <input type="submit" value="Login with Pocket">
+                    <input type="hidden" name="login" value="true">
+                    <input type="hidden" name="page" value="pocket-to-wordpress">
+                </form>
+            <?php
+            endif;
+
+            if(!empty($this->access_token)): ?>
+            <form>
+                <input type="submit" value="Deconnect from Pocket">
+                <input type="hidden" name="logout" value="true">
                 <input type="hidden" name="page" value="pocket-to-wordpress">
             </form>
             <?php
             endif;
 
-            if ($list) {
-                var_dump($list);
+            if (is_array($list) && isset($list['list'])) {
+                echo '<h2>Reading List</h2>';
+                echo $this->display_pocket_list_items((array) $list['list']);
             }
 
             ?>
@@ -198,9 +208,18 @@ class PocketToWordpress
     {
         $access_token = get_option($this->prefix . 'access_token');
         $list = $this->fetch_pocket($access_token, $attributes);
-        $html = '';
+
         if (isset($list['list'])) {
             $list = $list['list'];
+            return $this->display_pocket_list_items($list);
+        }
+
+        return '';
+    }
+
+    public function display_pocket_list_items(array $list)
+    {
+        if (!empty($list)) {
             ob_start();
             ?>
             <ul>
@@ -215,10 +234,10 @@ class PocketToWordpress
                 ?>
             </ul>
             <?php
-            $html = ob_get_clean();
+            return ob_get_clean();
         }
 
-        return $html;
+        return '';
     }
 
     public function activate()
