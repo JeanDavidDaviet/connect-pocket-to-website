@@ -13,6 +13,8 @@ namespace JDD;
 
 defined('ABSPATH') || die();
 
+require_once dirname( __FILE__ ) . '/classes/Settings.php';
+
 /**
  * Main plugin class.
  *
@@ -71,6 +73,7 @@ class PocketToWordpress
 
     public function __construct()
     {
+        new Settings();
         register_activation_hook(__FILE__, [$this, 'activate']);
         register_deactivation_hook(__FILE__, [$this, 'deactivate']);
 
@@ -80,7 +83,7 @@ class PocketToWordpress
         add_shortcode('pocket-to-wordpress', [$this, 'pwt_shortcode']);
 
         $this->redirect_uri = urlencode(plugin_dir_url(__FILE__) . 'callback.php');
-        $this->pwt_code = get_option($this->prefix . 'code');
+        $this->pwt_code = get_option($this->prefix . 'request_code');
         $this->access_token = get_option($this->prefix . 'access_token');
     }
 
@@ -108,7 +111,7 @@ class PocketToWordpress
 
         $auth_error = get_option('ptw_auth_error');
         if ($_GET['logout'] === 'true' || !empty($auth_error)) {
-            delete_option($this->prefix . 'code');
+            delete_option($this->prefix . 'request_code');
             delete_option($this->prefix . 'access_token');
             delete_option($this->prefix . 'auth_error');
             // todo add notification of failure
@@ -125,6 +128,27 @@ class PocketToWordpress
 
         ?>
         <div class="wrap">
+
+            <form action="<?php echo admin_url('options.php'); ?>" method="post">
+                <?php
+                do_settings_sections('pocket-to-wordpress');
+                settings_fields('ptw_section1');
+                ?>
+                <table class="form-table" role="presentation">
+                    <tr>
+                        <th scope="row">Request Code</th>
+                        <td><p><?php echo esc_html(get_option('ptw_request_code')); ?></p></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Access Token</th>
+                        <td><p><?php echo esc_html(get_option('ptw_access_token')); ?></p></td>
+                    </tr>
+                </table>
+                <?php
+                submit_button('Save Settings');
+                ?>
+            </form>
+
             <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
             <?php if(empty($this->access_token)): ?>
                 <form>
@@ -164,7 +188,7 @@ class PocketToWordpress
 
             $code = explode('=', $response);
             $this->pwt_code = $code[1];
-            update_option($this->prefix . 'code', $this->pwt_code);
+            update_option($this->prefix . 'request_code', $this->pwt_code);
 
         }
     }

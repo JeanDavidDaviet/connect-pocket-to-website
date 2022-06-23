@@ -6,7 +6,7 @@ defined('ABSPATH') || die();
 
 $pwt_url = 'https://jeandaviddaviet.fr/pocket/';
 
-$request_code = get_option('ptw_code');
+$request_code = get_option('ptw_request_code');
 
 $request = wp_remote_get($pwt_url . '?path=authorize&request_code=' . $request_code);
 $response = wp_remote_retrieve_body($request);
