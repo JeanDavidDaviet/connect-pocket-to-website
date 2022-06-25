@@ -8,10 +8,15 @@ class Settings
     public function __construct()
     {
         add_action('admin_init', [$this, 'settings_init']);
+        add_action('admin_footer', [$this, 'admin_footer']);
     }
 
     public function settings_init()
     {
+        if(isset($_GET['login'])){
+            ob_start();
+        }
+
         add_settings_section(
             'ptw_section1',
             'Pocket To WordPress Settings',
@@ -27,6 +32,12 @@ class Settings
             'ptw_section1'
         );
         register_setting('ptw_section1', 'ptw_consumer_key');
+    }
+
+    public function admin_footer() {
+	    if ( isset( $_GET['login'] ) ) {
+		    ob_end_flush();
+	    }
     }
 
     public function ptw_consumer_key()

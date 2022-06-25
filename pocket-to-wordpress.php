@@ -40,7 +40,7 @@ class PocketToWordpress
     /**
      * The Api instance
      *
-     * @var string
+     * @var \JDD\Api
      */
     private $api;
 
@@ -60,14 +60,8 @@ class PocketToWordpress
         new Settings();
 
         add_action('admin_menu', [$this, 'register_settings_page']);
-        add_action('admin_init', [$this, 'admin_init']);
 
         add_shortcode('pocket-to-wordpress', [$this, 'pwt_shortcode']);
-    }
-
-    public function admin_init()
-    {
-        ob_start();
     }
 
     public function register_settings_page()
@@ -87,18 +81,17 @@ class PocketToWordpress
             return;
         }
 
-        $auth_error = get_option('ptw_auth_error');
-        if (($_GET['logout'] === 'true' || !empty($auth_error)) || isset($_GET['reset'])) {
-            delete_option($this->prefix . 'request_code');
-            delete_option($this->prefix . 'access_token');
-            delete_option($this->prefix . 'auth_error');
+        if (($_GET['logout'] === 'true' || !empty($this->api->get_auth_error())) || isset($_GET['reset'])) {
+            $this->api->set_request_code(null);
+            $this->api->set_access_token(null);
+            $this->api->set_auth_error(null);
             // todo add notification of failure
             wp_redirect(admin_url('options-general.php?page=pocket-to-wordpress'));
-            die;
+            exit;
         }
 
         if(isset($_GET['login'])){
-	        $this->api->request_code();
+            $this->api->request_code();
             $this->api->authorize();
         }
 
@@ -128,23 +121,25 @@ class PocketToWordpress
                 ?>
             </form>
 
-            <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
-            <?php if(empty($this->api->get_access_token())): ?>
+            <?php if(!empty($this->api->get_consumer_key())): ?>
+
+                <?php if(empty($this->api->get_access_token())): ?>
+                    <form>
+                        <input type="submit" value="Login with Pocket">
+                        <input type="hidden" name="login" value="true">
+                        <input type="hidden" name="page" value="pocket-to-wordpress">
+                    </form>
+                <?php
+                endif;
+
+                if(!empty($this->api->get_access_token())): ?>
                 <form>
-                    <input type="submit" value="Login with Pocket">
-                    <input type="hidden" name="login" value="true">
+                    <input type="submit" value="Disconnect from Pocket">
+                    <input type="hidden" name="logout" value="true">
                     <input type="hidden" name="page" value="pocket-to-wordpress">
                 </form>
-            <?php
-            endif;
-
-            if(!empty($this->api->get_access_token())): ?>
-            <form>
-                <input type="submit" value="Disconnect from Pocket">
-                <input type="hidden" name="logout" value="true">
-                <input type="hidden" name="page" value="pocket-to-wordpress">
-            </form>
-            <?php
+                <?php
+                endif;
             endif;
 
             if (is_array($list) && isset($list['list'])) {

@@ -1,42 +1,79 @@
 <?php
 
+namespace JDD;
+
 require dirname(dirname(dirname(dirname((__FILE__))))) . '/wp-load.php';
 
 defined('ABSPATH') || die();
 
-$pwt_url = 'https://jeandaviddaviet.fr/pocket/';
+require_once dirname( __FILE__ ) . '/classes/Api.php';
 
-$request_code = get_option('ptw_request_code');
+/**
+ * Main plugin class.
+ *
+ * @since 1.0.0
+ */
+class Callback
+{
+    /**
+     * The Api instance
+     *
+     * @var \JDD\Api
+     */
+    private $api;
 
-$request = wp_remote_get($pwt_url . '?path=authorize&request_code=' . $request_code);
-$response = wp_remote_retrieve_body($request);
+    public function __construct()
+    {
+        $this->api = new Api();
+        $this->handle_response();
+    }
 
-parse_str($response, $output);
+    private function handle_response()
+    {
+        $response = $this->api->pocket('oauth/authorize', [
+            'code' => $this->api->get_request_code()
+        ]);
+        $headers = wp_remote_retrieve_headers($response);
+        $status = (int) substr($headers['status'], 0, 3);
 
-if(!isset($output["access_token"])){
-    $error_code = substr(array_keys($output)[0], 0, 3);
-    $error_message = 'Something wrong happened';
-    // user denied access
-    if($error_code === '400'){
-        $error_message = 'Invalid request, please make sure you follow the documentation for proper syntax';
+        if($status !== 200){
+            $this->handle_error($status);
+        }else{
+            $this->handle_success($response);
+        }
+
+        wp_redirect(admin_url('options-general.php?page=pocket-to-wordpress'));
+        exit;
     }
-    if($error_code === '401'){
-        $error_message = 'Problem authenticating the user';
+
+    private function handle_success($response)
+    {
+        $body = json_decode(wp_remote_retrieve_body($response));
+        $this->api->set_access_token($body->access_token);
+        $this->api->set_username($body->username);
     }
-    if($error_code === '403'){
-        $error_message = 'User was authenticated, but access denied due to lack of permission or rate limiting';
+
+    private function handle_error($status)
+    {
+        $error_message = 'Something wrong happened';
+        // user denied access
+        if($status === 400){
+            $error_message = 'Invalid request, please make sure you follow the documentation for proper syntax';
+        }
+        if($status === 401){
+            $error_message = 'Problem authenticating the user';
+        }
+        if($status === 403){
+            $error_message = 'User was authenticated, but access denied due to lack of permission or rate limiting';
+        }
+        if($status === 503){
+            $error_message = 'Pocket\'s sync server is down for scheduled maintenance.';
+        }
+        $this->api->set_auth_error([
+            'status' => $status,
+            'message' => $error_message,
+        ]);
     }
-    if($error_code === '503'){
-        $error_message = 'Pocket\'s sync server is down for scheduled maintenance.';
-    }
-    update_option('ptw_auth_error', [
-        'code' => $error_code,
-        'message' => $error_message,
-    ]);
-}else{
-    update_option('ptw_access_token', $output["access_token"]);
-    update_option('ptw_username', $output["username"]);
 }
 
-wp_redirect(admin_url('options-general.php?page=pocket-to-wordpress'));
-die;
+new Callback();
