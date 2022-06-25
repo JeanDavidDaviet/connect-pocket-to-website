@@ -41,7 +41,7 @@ class PocketToWordpress
      *
      * @var string
      */
-    private $pwt_url = 'https://jeandaviddaviet.fr/pocket';
+    private $api_url = 'https://getpocket.com/v3/';
 
     /**
      * This plugin redirect_uri url
@@ -83,6 +83,7 @@ class PocketToWordpress
         add_shortcode('pocket-to-wordpress', [$this, 'pwt_shortcode']);
 
         $this->redirect_uri = urlencode(plugin_dir_url(__FILE__) . 'callback.php');
+        $this->consumer_key = get_option($this->prefix . 'consumer_key');
         $this->pwt_code = get_option($this->prefix . 'request_code');
         $this->access_token = get_option($this->prefix . 'access_token');
     }
@@ -137,11 +138,11 @@ class PocketToWordpress
                 <table class="form-table" role="presentation">
                     <tr>
                         <th scope="row">Request Code</th>
-                        <td><p><?php echo esc_html(get_option('ptw_request_code')); ?></p></td>
+                        <td><p><?php echo esc_html($this->pwt_code); ?></p></td>
                     </tr>
                     <tr>
                         <th scope="row">Access Token</th>
-                        <td><p><?php echo esc_html(get_option('ptw_access_token')); ?></p></td>
+                        <td><p><?php echo esc_html($this->access_token); ?></p></td>
                     </tr>
                 </table>
                 <?php
@@ -161,7 +162,7 @@ class PocketToWordpress
 
             if(!empty($this->access_token)): ?>
             <form>
-                <input type="submit" value="Deconnect from Pocket">
+                <input type="submit" value="Disconnect from Pocket">
                 <input type="hidden" name="logout" value="true">
                 <input type="hidden" name="page" value="pocket-to-wordpress">
             </form>
@@ -182,12 +183,11 @@ class PocketToWordpress
     {
         if (empty($this->access_token) && empty($this->pwt_code)) {
 
-            $response = $this->get_from_pocket('request', [
+            $response = $this->get_from_pocket('oauth/request', [
                 'redirect_uri' => $this->redirect_uri
             ]);
 
-            $code = explode('=', $response);
-            $this->pwt_code = $code[1];
+            $this->pwt_code = $response->code;
             update_option($this->prefix . 'request_code', $this->pwt_code);
 
         }
@@ -206,10 +206,17 @@ class PocketToWordpress
     private function get_from_pocket($path, $params)
     {
         $params = array_merge([
-            'path' => $path,
+            'consumer_key' => $this->consumer_key
         ], $params);
-        $request = wp_remote_get($this->pwt_url . '?' . http_build_query($params));
-        return wp_remote_retrieve_body($request);
+
+        $request = wp_remote_post( $this->api_url . $path, [
+            'headers' => [
+                'Content-Type' => 'application/json; charset=UTF-8',
+                'X-Accept' => 'application/json'
+            ],
+            'body' => json_encode($params)
+        ]);
+        return json_decode(wp_remote_retrieve_body($request));
     }
 
     public function fetch_pocket($access_token = '', $options = [])
@@ -221,7 +228,8 @@ class PocketToWordpress
             $response = $this->get_from_pocket('get', array_merge([
                 'access_token' => $access_token
             ], $options));
-            $list = (array) json_decode($response);
+
+            $list = (array) $response;
             update_option($this->prefix . 'list', $list);
             return $list;
         }
