@@ -55,19 +55,19 @@ class Callback
 
     private function handle_error($status)
     {
-        $error_message = 'Something wrong happened';
+        $error_message = __('Something wrong happened', 'pocket-to-wordpress');
         // user denied access
         if($status === 400){
-            $error_message = 'Invalid request, please make sure you follow the documentation for proper syntax';
+            $error_message = __('Invalid request, please make sure you follow the documentation for proper syntax', 'pocket-to-wordpress');
         }
         if($status === 401){
-            $error_message = 'Problem authenticating the user';
+            $error_message = __('Problem authenticating the user', 'pocket-to-wordpress');
         }
         if($status === 403){
-            $error_message = 'User was authenticated, but access denied due to lack of permission or rate limiting';
+            $error_message = __('User was authenticated, but access denied due to lack of permission or rate limiting', 'pocket-to-wordpress');
         }
         if($status === 503){
-            $error_message = 'Pocket\'s sync server is down for scheduled maintenance.';
+            $error_message = __('Pocket\'s sync server is down for scheduled maintenance.', 'pocket-to-wordpress');
         }
         $this->api->set_auth_error([
             'status' => $status,

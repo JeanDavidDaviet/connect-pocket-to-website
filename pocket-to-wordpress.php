@@ -108,24 +108,39 @@ class PocketToWordpress
                 ?>
                 <table class="form-table" role="presentation">
                     <tr>
-                        <th scope="row">Request Code</th>
+                        <th scope="row"><?php _e('Request Code', 'pocket-to-wordpress'); ?></th>
                         <td><p><?php echo esc_html($this->api->get_request_code()); ?></p></td>
                     </tr>
                     <tr>
-                        <th scope="row">Access Token</th>
+                        <th scope="row"><?php _e('Access Token', 'pocket-to-wordpress'); ?></th>
                         <td><p><?php echo esc_html($this->api->get_access_token()); ?></p></td>
                     </tr>
                 </table>
                 <?php
-                submit_button('Save Settings');
+                submit_button(__('Save Settings', 'pocket-to-wordpress'));
                 ?>
             </form>
 
             <?php if(!empty($this->api->get_consumer_key())): ?>
 
+                <style>.pocket-btn{
+                        padding: 12px 12px 12px 45px;
+                        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-16.04235 -23.82925 139.0337 142.9755'%3E%3Cpath d='M84.058 39.778L58.54 63.794c-1.313 1.501-3.377 2.065-4.878 2.065-1.876 0-3.752-.564-5.253-2.065L23.266 39.778c-2.627-2.814-3.002-7.505 0-10.507 2.814-2.627 7.505-3.002 10.32 0l20.076 19.325 20.452-19.325c2.627-3.002 7.317-2.627 9.944 0 2.627 3.002 2.627 7.693 0 10.507M97.005 0H10.32C4.691 0 0 4.316 0 9.945v32.084c0 29.083 24.016 53.288 53.662 53.288 29.458 0 53.287-24.205 53.287-53.288V9.945c0-5.629-4.503-9.945-9.944-9.945' fill='%23EF4056'/%3E%3C/svg%3E");
+                        background-repeat: no-repeat;
+                        background-position: 10px center;
+                        background-color: white;
+                        background-size: 30px;
+                        border: 1px solid #cccccc;
+                        border-radius: 3px;
+                        cursor: pointer;
+                        transition: color .15s;
+                    }.pocket-btn:hover, .pocket-btn:focus {
+                        color: #ee4055;
+                     }</style>
+
                 <?php if(empty($this->api->get_access_token())): ?>
                     <form>
-                        <input type="submit" value="Login with Pocket">
+                        <input type="submit" class="pocket-btn" value="<?php echo esc_attr(__('Login with Pocket', 'pocket-to-wordpress')); ?>">
                         <input type="hidden" name="login" value="true">
                         <input type="hidden" name="page" value="pocket-to-wordpress">
                     </form>
@@ -134,19 +149,13 @@ class PocketToWordpress
 
                 if(!empty($this->api->get_access_token())): ?>
                 <form>
-                    <input type="submit" value="Disconnect from Pocket">
+                    <input type="submit" class="pocket-btn" value="<?php echo esc_attr(__('Disconnect with Pocket', 'pocket-to-wordpress')); ?>">
                     <input type="hidden" name="logout" value="true">
                     <input type="hidden" name="page" value="pocket-to-wordpress">
                 </form>
                 <?php
                 endif;
             endif;
-
-            if (is_array($list) && isset($list['list'])) {
-                echo '<h2>Reading List</h2>';
-                echo $this->display_pocket_list_items((array) $list['list']);
-            }
-
             ?>
         </div>
         <?php
@@ -155,10 +164,10 @@ class PocketToWordpress
     public function pwt_shortcode($attributes)
     {
         $access_token = get_option($this->prefix . 'access_token');
-        $list = $this->fetch_pocket($access_token, $attributes);
+        $list = $this->api->get_list($access_token, (array) $attributes);
+        $list = (array) $list->list;
 
-        if (isset($list['list'])) {
-            $list = $list['list'];
+        if (!empty($list)){
             return $this->display_pocket_list_items($list);
         }
 

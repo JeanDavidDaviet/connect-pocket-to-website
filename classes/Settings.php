@@ -19,14 +19,14 @@ class Settings
 
         add_settings_section(
             'ptw_section1',
-            'Pocket To WordPress Settings',
+            __('Pocket To WordPress Settings', 'pocket-to-wordpress'),
             '__return_false',
             'pocket-to-wordpress'
         );
 
         add_settings_field(
             'ptw_consumer_key',
-            'Consumer Key',
+            __('Consumer Key', 'pocket-to-wordpress'),
             [$this, 'ptw_consumer_key'],
             'pocket-to-wordpress',
             'ptw_section1'

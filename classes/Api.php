@@ -141,7 +141,6 @@ class Api {
         }
     }
 
-
     /**
      * @return array
      */
@@ -206,8 +205,7 @@ class Api {
         if ( ! empty( $access_token ) ) {
             $response = $this->pocket( 'get', array_merge( [
                 'access_token' => $access_token,
-            ], $options ) );
-
+            ], array_filter($options) ) );
 
             return json_decode( wp_remote_retrieve_body( $response ) );
         }
