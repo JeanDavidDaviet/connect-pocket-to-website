@@ -98,67 +98,109 @@ class PocketToWordpress
         $list = (array) $this->api->get_list();
         update_option($this->prefix . 'list', $list);
 
+        //Get the active tab from the $_GET param
+        $default_tab = null;
+        $tab = isset($_GET['tab']) ? $_GET['tab'] : $default_tab;
+
+        $tab_url = admin_url('options-general.php?page=pocket-to-wordpress');
+
         ?>
         <div class="wrap">
 
-            <form action="<?php echo admin_url('options.php'); ?>" method="post">
-                <?php
-                do_settings_sections('pocket-to-wordpress');
-                settings_fields('ptw_section1');
-                if(!empty($this->api->get_consumer_key())):
-                ?>
-                <table class="form-table" role="presentation">
-                    <tr>
-                        <th scope="row"><?php _e('Request Code', 'pocket-to-wordpress'); ?></th>
-                        <td><p><?php echo esc_html($this->api->get_request_code()); ?></p></td>
-                    </tr>
-                    <tr>
-                        <th scope="row"><?php _e('Access Token', 'pocket-to-wordpress'); ?></th>
-                        <td><p><?php echo esc_html($this->api->get_access_token()); ?></p></td>
-                    </tr>
-                </table>
-                <?php
-                endif;
-                submit_button(__('Save Settings', 'pocket-to-wordpress'));
-                ?>
-            </form>
+            <h1><?php _e('Pocket To WordPress Settings', 'pocket-to-wordpress'); ?></h1>
 
-            <?php if(!empty($this->api->get_consumer_key())): ?>
+            <nav class="nav-tab-wrapper">
+                <a href="<?php echo $tab_url; ?>" class="nav-tab <?php if($tab===null):?>nav-tab-active<?php endif; ?>"><?php _e('Connection', 'pocket-to-wordpress'); ?></a>
+                <a href="<?php echo $tab_url; ?>&tab=how-to" class="nav-tab <?php if($tab==='how-to'):?>nav-tab-active<?php endif; ?>"><?php _e('How-to', 'pocket-to-wordpress'); ?></a>
+                <a href="<?php echo $tab_url; ?>&tab=display" class="nav-tab <?php if($tab==='display'):?>nav-tab-active<?php endif; ?>"><?php _e('Display', 'pocket-to-wordpress'); ?></a>
+            </nav>
 
-                <style>.pocket-btn{
-                        padding: 12px 12px 12px 45px;
-                        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-16.04235 -23.82925 139.0337 142.9755'%3E%3Cpath d='M84.058 39.778L58.54 63.794c-1.313 1.501-3.377 2.065-4.878 2.065-1.876 0-3.752-.564-5.253-2.065L23.266 39.778c-2.627-2.814-3.002-7.505 0-10.507 2.814-2.627 7.505-3.002 10.32 0l20.076 19.325 20.452-19.325c2.627-3.002 7.317-2.627 9.944 0 2.627 3.002 2.627 7.693 0 10.507M97.005 0H10.32C4.691 0 0 4.316 0 9.945v32.084c0 29.083 24.016 53.288 53.662 53.288 29.458 0 53.287-24.205 53.287-53.288V9.945c0-5.629-4.503-9.945-9.944-9.945' fill='%23EF4056'/%3E%3C/svg%3E");
-                        background-repeat: no-repeat;
-                        background-position: 10px center;
-                        background-color: white;
-                        background-size: 30px;
-                        border: 1px solid #cccccc;
-                        border-radius: 3px;
-                        cursor: pointer;
-                        transition: color .15s;
-                    }.pocket-btn:hover, .pocket-btn:focus {
-                        color: #ee4055;
-                     }</style>
-
-                <?php if(empty($this->api->get_access_token())): ?>
-                    <form>
-                        <input type="submit" class="pocket-btn" value="<?php echo esc_attr(__('Login with Pocket', 'pocket-to-wordpress')); ?>">
-                        <input type="hidden" name="login" value="true">
-                        <input type="hidden" name="page" value="pocket-to-wordpress">
+            <div class="tab-content">
+	            <?php if($tab === null): ?>
+                    <form action="<?php echo admin_url('options.php'); ?>" method="post">
+			            <?php
+			            do_settings_sections('pocket-to-wordpress');
+			            settings_fields('ptw_section1');
+			            if(!empty($this->api->get_consumer_key())):
+				            ?>
+                            <table class="form-table" role="presentation">
+                                <tr>
+                                    <th scope="row"><?php _e('Request Code', 'pocket-to-wordpress'); ?></th>
+                                    <td><p><?php echo esc_html($this->api->get_request_code()); ?></p></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><?php _e('Access Token', 'pocket-to-wordpress'); ?></th>
+                                    <td><p><?php echo esc_html($this->api->get_access_token()); ?></p></td>
+                                </tr>
+                            </table>
+			            <?php
+			            endif;
+			            submit_button(__('Save Settings', 'pocket-to-wordpress'));
+			            ?>
                     </form>
-                <?php
-                endif;
 
-                if(!empty($this->api->get_access_token())): ?>
-                <form>
-                    <input type="submit" class="pocket-btn" value="<?php echo esc_attr(__('Disconnect from Pocket', 'pocket-to-wordpress')); ?>">
-                    <input type="hidden" name="logout" value="true">
-                    <input type="hidden" name="page" value="pocket-to-wordpress">
-                </form>
-                <?php
-                endif;
-            endif;
-            ?>
+		            <?php if(!empty($this->api->get_consumer_key())): ?>
+
+                        <style>.pocket-btn{
+                                padding: 12px 12px 12px 45px;
+                                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-16.04235 -23.82925 139.0337 142.9755'%3E%3Cpath d='M84.058 39.778L58.54 63.794c-1.313 1.501-3.377 2.065-4.878 2.065-1.876 0-3.752-.564-5.253-2.065L23.266 39.778c-2.627-2.814-3.002-7.505 0-10.507 2.814-2.627 7.505-3.002 10.32 0l20.076 19.325 20.452-19.325c2.627-3.002 7.317-2.627 9.944 0 2.627 3.002 2.627 7.693 0 10.507M97.005 0H10.32C4.691 0 0 4.316 0 9.945v32.084c0 29.083 24.016 53.288 53.662 53.288 29.458 0 53.287-24.205 53.287-53.288V9.945c0-5.629-4.503-9.945-9.944-9.945' fill='%23EF4056'/%3E%3C/svg%3E");
+                                background-repeat: no-repeat;
+                                background-position: 10px center;
+                                background-color: white;
+                                background-size: 30px;
+                                border: 1px solid #cccccc;
+                                border-radius: 3px;
+                                cursor: pointer;
+                                transition: color .15s;
+                            }.pocket-btn:hover, .pocket-btn:focus {
+                                 color: #ee4055;
+                             }</style>
+
+			            <?php if(empty($this->api->get_access_token())): ?>
+                            <form>
+                                <input type="submit" class="pocket-btn" value="<?php echo esc_attr(__('Login with Pocket', 'pocket-to-wordpress')); ?>">
+                                <input type="hidden" name="login" value="true">
+                                <input type="hidden" name="page" value="pocket-to-wordpress">
+                            </form>
+			            <?php
+			            endif;
+
+			            if(!empty($this->api->get_access_token())): ?>
+                            <form>
+                                <input type="submit" class="pocket-btn" value="<?php echo esc_attr(__('Disconnect from Pocket', 'pocket-to-wordpress')); ?>">
+                                <input type="hidden" name="logout" value="true">
+                                <input type="hidden" name="page" value="pocket-to-wordpress">
+                            </form>
+			            <?php
+			            endif;
+		            endif;
+		            ?>
+	            <?php endif; ?>
+	            <?php if($tab === 'how-to'): ?>
+                    <h2><?php _e('How to get your consumer key', 'pocket-to-wordpress'); ?></h2>
+                    <p><?php _e(sprintf('In order to connect to Pocket from your WordPress website, you need to create an application on the %1$spocket API website%2$s.%3$sFollow the steps below to create you Pocket API application and get your %4$sconsumer key%5$s', '<a href="https://getpocket.com/developer/">', '</a>', '<br />', '<strong>', '</strong>'), 'pocket-to-wordpress'); ?>.</p>
+
+                    <h2><?php _e('The steps', 'pocket-to-wordpress'); ?></h2>
+                    <p><?php _e('First, you need to be connected to your Pocket account to create a new app.', 'pocket-to-wordpress'); ?><br />
+	                    <?php _e('Once connected, you can click on the big red button "Create new app".', 'pocket-to-wordpress'); ?><br />
+	                    <?php _e('Then, you arrive on a page asking you some details on your application.', 'pocket-to-wordpress'); ?></p>
+
+                    <ul style="list-style: disc;list-style-position: inside;">
+                        <li><?php _e(sprintf('The application Name : (eg: %1$s%2$s%3$s)', '<strong>', esc_html(get_option('blogname', site_url())),'</strong>'), 'pocket-to-wordpress'); ?></li>
+                        <li><?php _e(sprintf('The application Description : (eg: %1$s%2$s%3$s)', '<strong>', esc_html(get_option('blogdescription', __( 'Just another WordPress site' ))), '</strong>'), 'pocket-to-wordpress'); ?></li>
+                        <li><?php _e(sprintf('Permissions : You only need to check %1$sRetrieve%2$s', '<strong>', '</strong>'), 'pocket-to-wordpress'); ?></li>
+                        <li><?php _e(sprintf('Platforms : Choose %1$sWeb%2$s.', '<strong>', '</strong>'), 'pocket-to-wordpress'); ?></li>
+                        <li><?php _e(sprintf('Accept the %1$sTerms of Services%2$s.', '<strong>', '</strong>'), 'pocket-to-wordpress'); ?></li>
+                    </ul>
+                    <p><?php _e(sprintf('Click on the %1$sCreate Application%2$s button.', '<strong>', '</strong>'), 'pocket-to-wordpress'); ?><br />
+                    <?php _e('You are now redirected to the list of your applications.', 'pocket-to-wordpress'); ?><br />
+                    <?php _e(sprintf('All you have to do now is copy the consumer key and paste it it the %1$sConnection%2$s tab of this plugin.', '<a href="' . $tab_url . '">', '</a>'), 'pocket-to-wordpress'); ?></p>
+
+                    <h2><?php _e('Screenshots of an example application', 'pocket-to-wordpress'); ?></h2>
+                    <p><img src="<?php echo plugin_dir_url(__FILE__) . '/img/howto.jpg'; ?>" alt="screenshot of how to create a pocket application" width="600"></p>
+                    <p><img src="<?php echo plugin_dir_url(__FILE__) . '/img/howto2.jpg'; ?>" alt="screenshot of the list of pocket applications" width="600"></p>
+	            <?php endif; ?>
+            </div>
         </div>
         <?php
     }

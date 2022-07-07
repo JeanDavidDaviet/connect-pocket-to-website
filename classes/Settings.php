@@ -16,7 +16,7 @@ class Settings
 
         add_settings_section(
             'ptw_section1',
-            __('Pocket To WordPress Settings', 'pocket-to-wordpress'),
+            '',
             '__return_false',
             'pocket-to-wordpress'
         );
