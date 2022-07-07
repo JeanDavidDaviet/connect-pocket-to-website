@@ -183,8 +183,10 @@ class Api {
 
             $body = json_decode( wp_remote_retrieve_body( $response ) );
 
-            $this->request_code = $body->code;
-            update_option( $this->prefix . 'request_code', $this->request_code );
+            if($body && isset($body->code)){
+                $this->request_code = $body->code;
+                update_option( $this->prefix . 'request_code', $this->request_code );
+            }
 
         }
     }

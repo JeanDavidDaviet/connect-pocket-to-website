@@ -81,7 +81,7 @@ class PocketToWordpress
             return;
         }
 
-        if (($_GET['logout'] === 'true' || !empty($this->api->get_auth_error())) || isset($_GET['reset'])) {
+        if (((isset($_GET['logout']) && $_GET['logout'] === 'true') || !empty($this->api->get_auth_error())) || isset($_GET['reset'])) {
             $this->api->set_request_code(null);
             $this->api->set_access_token(null);
             $this->api->set_auth_error(null);
@@ -105,6 +105,7 @@ class PocketToWordpress
                 <?php
                 do_settings_sections('pocket-to-wordpress');
                 settings_fields('ptw_section1');
+                if(!empty($this->api->get_consumer_key())):
                 ?>
                 <table class="form-table" role="presentation">
                     <tr>
@@ -117,6 +118,7 @@ class PocketToWordpress
                     </tr>
                 </table>
                 <?php
+                endif;
                 submit_button(__('Save Settings', 'pocket-to-wordpress'));
                 ?>
             </form>
@@ -149,7 +151,7 @@ class PocketToWordpress
 
                 if(!empty($this->api->get_access_token())): ?>
                 <form>
-                    <input type="submit" class="pocket-btn" value="<?php echo esc_attr(__('Disconnect with Pocket', 'pocket-to-wordpress')); ?>">
+                    <input type="submit" class="pocket-btn" value="<?php echo esc_attr(__('Disconnect from Pocket', 'pocket-to-wordpress')); ?>">
                     <input type="hidden" name="logout" value="true">
                     <input type="hidden" name="page" value="pocket-to-wordpress">
                 </form>
