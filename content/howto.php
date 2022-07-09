@@ -6,7 +6,7 @@
     <?php _e('Once connected, you can click on the big red button "Create new app".', 'pocket-to-wordpress'); ?><br />
     <?php _e('Then, you arrive on a page asking you some details on your application.', 'pocket-to-wordpress'); ?></p>
 
-<ul style="list-style: disc;list-style-position: inside;">
+<ul style="list-style: disc inside;">
     <li><?php _e(sprintf('The application Name : (eg: %1$s%2$s%3$s)', '<strong>', esc_html(get_option('blogname', site_url())),'</strong>'), 'pocket-to-wordpress'); ?></li>
     <li><?php _e(sprintf('The application Description : (eg: %1$s%2$s%3$s)', '<strong>', esc_html(get_option('blogdescription', __( 'Just another WordPress site' ))), '</strong>'), 'pocket-to-wordpress'); ?></li>
     <li><?php _e(sprintf('Permissions : You only need to check %1$sRetrieve%2$s', '<strong>', '</strong>'), 'pocket-to-wordpress'); ?></li>
@@ -15,7 +15,7 @@
 </ul>
 <p><?php _e(sprintf('Click on the %1$sCreate Application%2$s button.', '<strong>', '</strong>'), 'pocket-to-wordpress'); ?><br />
     <?php _e('You are now redirected to the list of your applications.', 'pocket-to-wordpress'); ?><br />
-    <?php _e(sprintf('All you have to do now is copy the consumer key and paste it it the %1$sConnection%2$s tab of this plugin.', '<a href="' . $tab_url . '">', '</a>'), 'pocket-to-wordpress'); ?></p>
+    <?php _e(sprintf('All you have to do now is copy the consumer key and paste it it the %1$sConnection%2$s tab of this plugin.', '<a href="' . admin_url('options-general.php?page=pocket-to-wordpress') . '">', '</a>'), 'pocket-to-wordpress'); ?></p>
 
 <h2><?php _e('Screenshots of an example application', 'pocket-to-wordpress'); ?></h2>
 <p><img src="<?php echo plugin_dir_url(__FILE__) . '/img/howto.jpg'; ?>" alt="screenshot of how to create a pocket application" width="600"></p>

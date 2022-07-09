@@ -2,9 +2,9 @@
 /*
 Plugin Name: Pocket To WordPress
 Plugin URI: https://wordpress.org/plugins/pocket-to-wordpress/
-Description: This application allow you to display your Pocket list into your WordPress site
+Description: This plugin allows you to display your Pocket list into your WordPress site
 Author: Jean-David Daviet
-Version: 0.0.1
+Version: 1.0
 Author URI: https://jeandaviddaviet.fr
 Text Domain: pocket-to-wordpress
 */
@@ -157,7 +157,7 @@ class PocketToWordpress
                              }</style>
 
                         <?php if(empty($this->api->get_access_token())): ?>
-                            @<form>
+                            <form>
                                 <input type="submit" class="pocket-btn" value="<?php echo esc_attr(__('Login with Pocket', 'pocket-to-wordpress')); ?>">
                                 <input type="hidden" name="login" value="true">
                                 <input type="hidden" name="page" value="pocket-to-wordpress">

@@ -1,13 +1,4 @@
 <?php
-/*
-Plugin Name: Pocket To WordPress
-Plugin URI: https://wordpress.org/plugins/pocket-to-wordpress/
-Description: This application allow you to display your Pocket list into your WordPress site
-Author: Jean-David Daviet
-Version: 0.0.1
-Author URI: https://jeandaviddaviet.fr
-Text Domain: pocket-to-wordpress
-*/
 
 namespace JDD;
 

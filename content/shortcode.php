@@ -1,7 +1,7 @@
 <style>.shortcode_creator_group ul { padding-left: 10px; }</style>
-                    <h2><?php _e('How to display a feed on your WordPress site', 'pocket-to-wordpress'); ?></h2>
+<h2><?php _e('How to display a feed on your WordPress site', 'pocket-to-wordpress'); ?></h2>
 <p><?php _e(sprintf('This plugin gives you the possibility to display a list of feed via the use of %1$sshortcodes%2$s.', '<a href="https://wordpress.com/support/shortcodes/" target="_blank">', '</a>'), 'pocket-to-wordpress'); ?><br />
-    <?php _e('Simply compose your shortcode with the use of the predefined filters below.', 'pocket-to-wordpress'); ?></br />
+    <?php _e('', ''); ?></br />
     <?php _e('Then paste it wherever you want in your WordPress website.', 'pocket-to-wordpress'); ?></p>
 <p><input id="shortcode_display" type="text" value="[pocket-to-wordpress]" style="width: 100%;"></p>
 
@@ -116,9 +116,7 @@
 <script>
     const shortcodeDisplay = document.getElementById('shortcode_display');
     Array.from(document.querySelectorAll('.shortcode_creator input')).forEach(input => {
-        input.addEventListener('change', function(e){
-            calculateShortcode();
-        });
+        input.addEventListener('change', calculateShortcode)
     });
     function calculateShortcode(){
         let shortcode = '';
