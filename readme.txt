@@ -1,4 +1,4 @@
-=== Pocket To WordPress ===
+=== Pocket To Website ===
 Contributors: jean-david
 Tags: pocket, list, reading, later
 Requires at least: 3.1.0
@@ -14,14 +14,14 @@ This plugin allows you to display your Pocket list into your WordPress site
 
 = Need Help? Found A Bug? Want To Contribute Code? =
 
-Support for this plugin is provided via the [WordPress.org forums](https://wordpress.org/support/plugin/pocket-to-wordpress).
+Support for this plugin is provided via the [WordPress.org forums](https://wordpress.org/support/plugin/pocket-to-website).
 
-The source code for this plugin is available on [GitHub](https://github.com/JeanDavidDaviet/pocket-to-wordpress).
+The source code for this plugin is available on [GitHub](https://github.com/JeanDavidDaviet/pocket-to-website).
 
 == Installation ==
 
 1. Go to your admin area and select Plugins → Add New from the menu.
-2. Search for "Pocket To WordPress".
+2. Search for "Pocket To Website".
 3. Click install.
 4. Click activate.
 

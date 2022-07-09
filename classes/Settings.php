@@ -18,14 +18,14 @@ class Settings
             'ptw_section1',
             '',
             '__return_false',
-            'pocket-to-wordpress'
+            'pocket-to-website'
         );
 
         add_settings_field(
             'ptw_consumer_key',
-            __('Consumer Key', 'pocket-to-wordpress'),
+            __('Consumer Key', 'pocket-to-website'),
             [$this, 'ptw_consumer_key'],
-            'pocket-to-wordpress',
+            'pocket-to-website',
             'ptw_section1'
         );
         register_setting('ptw_section1', 'ptw_consumer_key');
