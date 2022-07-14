@@ -1,12 +1,12 @@
 <?php
 /*
-Plugin Name: Pocket To Website
-Plugin URI: https://wordpress.org/plugins/pocket-to-website/
+Plugin Name: Connect Pocket To Website
+Plugin URI: https://wordpress.org/plugins/connect-pocket-to-website/
 Description: This plugin allows you to display your Pocket list into your WordPress site
 Author: Jean-David Daviet
 Version: 1.0
 Author URI: https://jeandaviddaviet.fr
-Text Domain: pocket-to-website
+Text Domain: connect-pocket-to-website
 */
 
 namespace JDD;
@@ -35,7 +35,7 @@ class PocketToWordpress
      *
      * @var string
      */
-    private $prefix = 'ptw_';
+    private $prefix = 'cptw_';
 
     /**
      * The Api instance
@@ -61,21 +61,21 @@ class PocketToWordpress
 
         add_action('admin_menu', [$this, 'register_settings_page']);
 
-        add_shortcode('pocket-to-website', [$this, 'pwt_shortcode']);
+        add_shortcode('connect-pocket-to-website', [$this, 'cptw_shortcode']);
     }
 
     public function register_settings_page()
     {
         add_options_page(
-            'Pocket To Website Settings Page',
-            'Pocket To Website',
+            'Connect Pocket To Website Settings Page',
+            'Connect Pocket To Website',
             $this->capability_settings,
-            'pocket-to-website',
-            [$this, 'display_ptw_setting_page_callback']
+            'connect-pocket-to-website',
+            [$this, 'display_cptw_setting_page_callback']
         );
     }
 
-    public function display_ptw_setting_page_callback()
+    public function display_cptw_setting_page_callback()
     {
         if (! current_user_can($this->capability_settings)) {
             return;
@@ -86,7 +86,7 @@ class PocketToWordpress
             $this->api->set_access_token(null);
             $this->api->set_auth_error(null);
             // todo add notification of failure
-            wp_redirect(admin_url('options-general.php?page=pocket-to-website'));
+            wp_redirect(admin_url('options-general.php?page=connect-pocket-to-website'));
             exit;
         }
 
@@ -102,40 +102,40 @@ class PocketToWordpress
         $default_tab = null;
         $tab = isset($_GET['tab']) ? $_GET['tab'] : $default_tab;
 
-        $tab_url = admin_url('options-general.php?page=pocket-to-website');
+        $tab_url = admin_url('options-general.php?page=connect-pocket-to-website');
 
         ?>
         <div class="wrap">
 
-            <h1><?php _e('Pocket To Website Settings', 'pocket-to-website'); ?></h1>
+            <h1><?php _e('Connect Pocket To Website Settings', 'connect-pocket-to-website'); ?></h1>
 
             <nav class="nav-tab-wrapper">
-                <a href="<?php echo $tab_url; ?>" class="nav-tab <?php if($tab===null):?>nav-tab-active<?php endif; ?>"><?php _e('Connection', 'pocket-to-website'); ?></a>
-                <a href="<?php echo $tab_url; ?>&tab=howto" class="nav-tab <?php if($tab==='howto'):?>nav-tab-active<?php endif; ?>"><?php _e('How-to', 'pocket-to-website'); ?></a>
-                <a href="<?php echo $tab_url; ?>&tab=display" class="nav-tab <?php if($tab==='display'):?>nav-tab-active<?php endif; ?>"><?php _e('Display', 'pocket-to-website'); ?></a>
+                <a href="<?php echo $tab_url; ?>" class="nav-tab <?php if($tab===null):?>nav-tab-active<?php endif; ?>"><?php _e('Connection', 'connect-pocket-to-website'); ?></a>
+                <a href="<?php echo $tab_url; ?>&tab=howto" class="nav-tab <?php if($tab==='howto'):?>nav-tab-active<?php endif; ?>"><?php _e('How-to', 'connect-pocket-to-website'); ?></a>
+                <a href="<?php echo $tab_url; ?>&tab=display" class="nav-tab <?php if($tab==='display'):?>nav-tab-active<?php endif; ?>"><?php _e('Display', 'connect-pocket-to-website'); ?></a>
             </nav>
 
             <div class="tab-content">
                 <?php if($tab === null): ?>
                     <form action="<?php echo admin_url('options.php'); ?>" method="post">
                         <?php
-                        do_settings_sections('pocket-to-website');
-                        settings_fields('ptw_section1');
+                        do_settings_sections('connect-pocket-to-website');
+                        settings_fields('cptw_section1');
                         if(!empty($this->api->get_consumer_key())):
                             ?>
                             <table class="form-table" role="presentation">
                                 <tr>
-                                    <th scope="row"><?php _e('Request Code', 'pocket-to-website'); ?></th>
+                                    <th scope="row"><?php _e('Request Code', 'connect-pocket-to-website'); ?></th>
                                     <td><p><?php echo esc_html($this->api->get_request_code()); ?></p></td>
                                 </tr>
                                 <tr>
-                                    <th scope="row"><?php _e('Access Token', 'pocket-to-website'); ?></th>
+                                    <th scope="row"><?php _e('Access Token', 'connect-pocket-to-website'); ?></th>
                                     <td><p><?php echo esc_html($this->api->get_access_token()); ?></p></td>
                                 </tr>
                             </table>
                         <?php
                         endif;
-                        submit_button(__('Save Settings', 'pocket-to-website'));
+                        submit_button(__('Save Settings', 'connect-pocket-to-website'));
                         ?>
                     </form>
 
@@ -158,18 +158,18 @@ class PocketToWordpress
 
                         <?php if(empty($this->api->get_access_token())): ?>
                             <form>
-                                <input type="submit" class="pocket-btn" value="<?php echo esc_attr(__('Login with Pocket', 'pocket-to-website')); ?>">
+                                <input type="submit" class="pocket-btn" value="<?php echo esc_attr(__('Login with Pocket', 'connect-pocket-to-website')); ?>">
                                 <input type="hidden" name="login" value="true">
-                                <input type="hidden" name="page" value="pocket-to-website">
+                                <input type="hidden" name="page" value="connect-pocket-to-website">
                             </form>
                         <?php
                         endif;
 
                         if(!empty($this->api->get_access_token())): ?>
                             <form>
-                                <input type="submit" class="pocket-btn" value="<?php echo esc_attr(__('Disconnect from Pocket', 'pocket-to-website')); ?>">
+                                <input type="submit" class="pocket-btn" value="<?php echo esc_attr(__('Disconnect from Pocket', 'connect-pocket-to-website')); ?>">
                                 <input type="hidden" name="logout" value="true">
-                                <input type="hidden" name="page" value="pocket-to-website">
+                                <input type="hidden" name="page" value="connect-pocket-to-website">
                             </form>
                         <?php
                         endif;
@@ -183,7 +183,7 @@ class PocketToWordpress
         <?php
     }
 
-    public function pwt_shortcode($attributes)
+    public function cptw_shortcode($attributes)
     {
         $access_token = get_option($this->prefix . 'access_token');
         $list = $this->api->get_list($access_token, (array) $attributes);

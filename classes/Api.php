@@ -15,7 +15,7 @@ class Api {
      *
      * @var string
      */
-    private $prefix = 'ptw_';
+    private $prefix = 'cptw_';
 
     /**
      * This plugin server's url

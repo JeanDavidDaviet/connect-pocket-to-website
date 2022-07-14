@@ -42,7 +42,7 @@ class Callback
             $this->handle_success($response);
         }
 
-        wp_redirect(admin_url('options-general.php?page=pocket-to-website'));
+        wp_redirect(admin_url('options-general.php?page=connect-pocket-to-website'));
         exit;
     }
 
@@ -55,19 +55,19 @@ class Callback
 
     private function handle_error($status)
     {
-        $error_message = __('Something wrong happened', 'pocket-to-website');
+        $error_message = __('Something wrong happened', 'connect-pocket-to-website');
         // user denied access
         if($status === 400){
-            $error_message = __('Invalid request, please make sure you follow the documentation for proper syntax', 'pocket-to-website');
+            $error_message = __('Invalid request, please make sure you follow the documentation for proper syntax', 'connect-pocket-to-website');
         }
         if($status === 401){
-            $error_message = __('Problem authenticating the user', 'pocket-to-website');
+            $error_message = __('Problem authenticating the user', 'connect-pocket-to-website');
         }
         if($status === 403){
-            $error_message = __('User was authenticated, but access denied due to lack of permission or rate limiting', 'pocket-to-website');
+            $error_message = __('User was authenticated, but access denied due to lack of permission or rate limiting', 'connect-pocket-to-website');
         }
         if($status === 503){
-            $error_message = __('Pocket\'s sync server is down for scheduled maintenance.', 'pocket-to-website');
+            $error_message = __('Pocket\'s sync server is down for scheduled maintenance.', 'connect-pocket-to-website');
         }
         $this->api->set_auth_error([
             'status' => $status,

@@ -15,31 +15,31 @@ class Settings
         ob_start();
 
         add_settings_section(
-            'ptw_section1',
+            'cptw_section1',
             '',
             '__return_false',
-            'pocket-to-website'
+            'connect-pocket-to-website'
         );
 
         add_settings_field(
-            'ptw_consumer_key',
-            __('Consumer Key', 'pocket-to-website'),
-            [$this, 'ptw_consumer_key'],
-            'pocket-to-website',
-            'ptw_section1'
+            'cptw_consumer_key',
+            __('Consumer Key', 'connect-pocket-to-website'),
+            [$this, 'cptw_consumer_key'],
+            'connect-pocket-to-website',
+            'cptw_section1'
         );
-        register_setting('ptw_section1', 'ptw_consumer_key');
+        register_setting('cptw_section1', 'cptw_consumer_key');
     }
 
     public function admin_footer() {
         ob_end_flush();
     }
 
-    public function ptw_consumer_key()
+    public function cptw_consumer_key()
     {
-        $setting = get_option('ptw_consumer_key');
+        $setting = get_option('cptw_consumer_key');
         ?>
-        <input name="ptw_consumer_key" type="text" value="<?php echo esc_attr($setting); ?>">
+        <input name="cptw_consumer_key" type="text" value="<?php echo esc_attr($setting); ?>">
         <?php
     }
 
