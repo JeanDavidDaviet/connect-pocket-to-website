@@ -2,11 +2,7 @@
 
 namespace JDD\CPTW;
 
-require dirname(dirname(dirname(dirname((__FILE__))))) . '/wp-load.php';
-
-defined('ABSPATH') || die();
-
-require_once dirname( __FILE__ ) . '/classes/Api.php';
+use function \wp_redirect;
 
 class Callback
 {
@@ -31,12 +27,35 @@ class Callback
      */
     public $admin_url = '';
 
+    /**
+     * The capability required to access this plugin's settings.
+     *
+     * @var string
+     */
+    public $capability_settings = 'manage_options';
+
     public function __construct()
     {
+        add_action('admin_menu', [$this, 'register_callback_page']);
         $this->admin_url = 'options-general.php?page=' . $this->slug;
         $this->api = new Api();
-        $this->handle_response();
     }
+
+    public function register_callback_page()
+    {
+        add_options_page(
+            'Connect Pocket To Website Callback Page',
+            'Connect Pocket To Website2',
+            $this->capability_settings,
+            'connect-pocket-to-website2',
+            [$this, 'display_cptw_setting_page_callback2']
+        );
+    }
+
+    public function display_cptw_setting_page_callback2()
+    {
+        $this->handle_response();
+        }
 
     private function handle_response()
     {
@@ -51,8 +70,9 @@ class Callback
         }else{
             $this->handle_success($response);
         }
-
-        wp_redirect(admin_url($this->admin_url));
+        var_dump($status);
+        die;
+        header( "Location: " . admin_url($this->admin_url), true, 302 );
         exit;
     }
 
@@ -85,5 +105,3 @@ class Callback
         ]);
     }
 }
-
-new Callback();

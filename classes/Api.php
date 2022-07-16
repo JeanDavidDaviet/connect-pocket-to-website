@@ -55,7 +55,7 @@ class Api {
     private $auth_error;
 
     public function __construct() {
-        $this->redirect_uri = urlencode( plugin_dir_url( dirname( __FILE__ ) ) . 'callback.php' );
+        $this->redirect_uri = urlencode( 'http://pocketwordpress.local/wp-admin/options-general.php?page=connect-pocket-to-website2' );
         $this->consumer_key = get_option( $this->prefix . 'consumer_key' );
         $this->request_code = get_option( $this->prefix . 'request_code' );
         $this->access_token = get_option( $this->prefix . 'access_token' );

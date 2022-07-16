@@ -15,6 +15,7 @@ defined('ABSPATH') || die();
 
 require_once dirname( __FILE__ ) . '/classes/Settings.php';
 require_once dirname( __FILE__ ) . '/classes/Api.php';
+require_once dirname( __FILE__ ) . '/classes/Callback.php';
 
 class ConnectPocketToWordpress
 {
@@ -67,6 +68,7 @@ class ConnectPocketToWordpress
 
         $this->admin_url = 'options-general.php?page=' . $this->slug;
         $this->api = new Api();
+        new Callback();
         new Settings();
 
         add_action('admin_menu', [$this, 'register_settings_page']);
