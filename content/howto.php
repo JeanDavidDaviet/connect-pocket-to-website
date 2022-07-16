@@ -15,7 +15,7 @@
 </ul>
 <p><?php printf(__('Click on the %1$sCreate Application%2$s button.', 'connect-pocket-to-website'), '<strong>', '</strong>'); ?><br />
     <?php esc_html_e('You are now redirected to the list of your applications.', 'connect-pocket-to-website'); ?><br />
-    <?php printf('All you have to do now is copy the consumer key and paste it it the %1$sConnection%2$s tab of this plugin.', '<a href="' . admin_url('options-general.php?page=connect-pocket-to-website') . '">', '</a>'), 'connect-pocket-to-website'); ?></p>
+    <?php printf(__('All you have to do now is copy the consumer key and paste it it the %1$sConnection%2$s tab of this plugin.', 'connect-pocket-to-website'), '<a href="' . admin_url($this->admin_url) . '">', '</a>'); ?></p>
 
 <h2><?php esc_html_e('Screenshots of an example application', 'connect-pocket-to-website'); ?></h2>
 <p><img src="<?php echo esc_attr(plugin_dir_url(__FILE__) . '/img/howto.jpg'); ?>" alt="screenshot of how to create a pocket application" width="600"></p>

@@ -17,8 +17,23 @@ class Callback
      */
     private $api;
 
+    /**
+     * This plugin's unique slug
+     *
+     * @var string
+     */
+    public $slug = 'connect-pocket-to-website';
+
+    /**
+     * The default admin page url.
+     *
+     * @var string
+     */
+    public $admin_url = '';
+
     public function __construct()
     {
+        $this->admin_url = 'options-general.php?page=' . $this->slug;
         $this->api = new Api();
         $this->handle_response();
     }
@@ -37,7 +52,7 @@ class Callback
             $this->handle_success($response);
         }
 
-        wp_redirect(admin_url('options-general.php?page=connect-pocket-to-website'));
+        wp_redirect(admin_url($this->admin_url));
         exit;
     }
 

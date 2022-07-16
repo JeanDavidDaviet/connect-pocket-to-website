@@ -26,6 +26,13 @@ class ConnectPocketToWordpress
     public $version = '1.0.0';
 
     /**
+     * This plugin's unique slug
+     *
+     * @var string
+     */
+    public $slug = 'connect-pocket-to-website';
+
+    /**
      * This plugin's prefix
      *
      * @var string
@@ -38,6 +45,13 @@ class ConnectPocketToWordpress
      * @var \JDD\CPTW\Api
      */
     private $api;
+
+    /**
+     * The default admin page url.
+     *
+     * @var string
+     */
+    public $admin_url = '';
 
     /**
      * The capability required to access this plugin's settings.
@@ -81,7 +95,7 @@ class ConnectPocketToWordpress
             $this->api->set_access_token(null);
             $this->api->set_auth_error(null);
             // todo add notification of failure
-            wp_redirect(admin_url('options-general.php?page=connect-pocket-to-website'));
+            wp_redirect(admin_url($this->admin_url));
             exit;
         }
 
@@ -97,7 +111,7 @@ class ConnectPocketToWordpress
         $default_tab = null;
         $tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : $default_tab;
 
-        $tab_url = admin_url('options-general.php?page=connect-pocket-to-website');
+        $tab_url = admin_url($this->admin_url);
 
         ?>
         <div class="wrap">
