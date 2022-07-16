@@ -23,7 +23,7 @@ class Settings
 
         add_settings_field(
             'cptw_consumer_key',
-            __('Consumer Key', 'connect-pocket-to-website'),
+            esc_html__('Consumer Key', 'connect-pocket-to-website'),
             [$this, 'cptw_consumer_key'],
             'connect-pocket-to-website',
             'cptw_section1'

@@ -102,17 +102,17 @@ class ConnectPocketToWordpress
         ?>
         <div class="wrap">
 
-            <h1><?php _e('Connect Pocket To Website Settings', 'connect-pocket-to-website'); ?></h1>
+            <h1><?php esc_html_e('Connect Pocket To Website Settings', 'connect-pocket-to-website'); ?></h1>
 
             <nav class="nav-tab-wrapper">
-                <a href="<?php echo esc_attr($tab_url); ?>" class="nav-tab <?php if($tab===null):?>nav-tab-active<?php endif; ?>"><?php _e('Connection', 'connect-pocket-to-website'); ?></a>
-                <a href="<?php echo esc_attr($tab_url); ?>&tab=howto" class="nav-tab <?php if($tab==='howto'):?>nav-tab-active<?php endif; ?>"><?php _e('How-to', 'connect-pocket-to-website'); ?></a>
-                <a href="<?php echo esc_attr($tab_url); ?>&tab=display" class="nav-tab <?php if($tab==='display'):?>nav-tab-active<?php endif; ?>"><?php _e('Display', 'connect-pocket-to-website'); ?></a>
+                <a href="<?php echo esc_attr($tab_url); ?>" class="nav-tab <?php if($tab===null):?>nav-tab-active<?php endif; ?>"><?php esc_html_e('Connection', 'connect-pocket-to-website'); ?></a>
+                <a href="<?php echo esc_attr($tab_url); ?>&tab=howto" class="nav-tab <?php if($tab==='howto'):?>nav-tab-active<?php endif; ?>"><?php esc_html_e('How-to', 'connect-pocket-to-website'); ?></a>
+                <a href="<?php echo esc_attr($tab_url); ?>&tab=display" class="nav-tab <?php if($tab==='display'):?>nav-tab-active<?php endif; ?>"><?php esc_html_e('Display', 'connect-pocket-to-website'); ?></a>
             </nav>
 
             <div class="tab-content">
                 <?php if($tab === null): ?>
-                    <form action="<?php echo admin_url('options.php'); ?>" method="post">
+                    <form action="<?php echo esc_attr(admin_url('options.php')); ?>" method="post">
                         <?php
                         do_settings_sections('connect-pocket-to-website');
                         settings_fields('cptw_section1');
@@ -120,17 +120,17 @@ class ConnectPocketToWordpress
                             ?>
                             <table class="form-table" role="presentation">
                                 <tr>
-                                    <th scope="row"><?php _e('Request Code', 'connect-pocket-to-website'); ?></th>
+                                    <th scope="row"><?php esc_html_e('Request Code', 'connect-pocket-to-website'); ?></th>
                                     <td><p><?php echo esc_html($this->api->get_request_code()); ?></p></td>
                                 </tr>
                                 <tr>
-                                    <th scope="row"><?php _e('Access Token', 'connect-pocket-to-website'); ?></th>
+                                    <th scope="row"><?php esc_html_e('Access Token', 'connect-pocket-to-website'); ?></th>
                                     <td><p><?php echo esc_html($this->api->get_access_token()); ?></p></td>
                                 </tr>
                             </table>
                         <?php
                         endif;
-                        submit_button(__('Save Settings', 'connect-pocket-to-website'));
+                        submit_button(esc_html__('Save Settings', 'connect-pocket-to-website'));
                         ?>
                     </form>
 
@@ -201,7 +201,7 @@ class ConnectPocketToWordpress
                 foreach ($list as $item) {
                     ?>
                     <li>
-                        <a href="<?php echo $item->resolved_url; ?>"><?php echo $item->resolved_title; ?></a>
+                        <a href="<?php echo esc_attr($item->resolved_url); ?>"><?php echo esc_html($item->resolved_title); ?></a>
                     </li>
                     <?php
                 }

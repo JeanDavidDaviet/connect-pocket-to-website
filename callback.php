@@ -66,7 +66,7 @@ class Callback
         }
         $this->api->set_auth_error([
             'status' => $status,
-            'message' => $error_message,
+            'message' => esc_html($error_message),
         ]);
     }
 }
