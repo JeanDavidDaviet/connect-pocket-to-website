@@ -4,12 +4,7 @@ namespace JDD\CPTW;
 
 class Settings
 {
-    /**
-     * This plugin's unique slug
-     *
-     * @var string
-     */
-    public $slug = 'connect-pocket-to-website';
+    use CPTWTrait;
 
     public function __construct()
     {

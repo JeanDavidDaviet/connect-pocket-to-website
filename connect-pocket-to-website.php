@@ -13,32 +13,14 @@ namespace JDD\CPTW;
 
 defined('ABSPATH') || die();
 
+require_once dirname( __FILE__ ) . '/traits/CPTWTrait.php';
 require_once dirname( __FILE__ ) . '/classes/Settings.php';
 require_once dirname( __FILE__ ) . '/classes/Api.php';
 require_once dirname( __FILE__ ) . '/classes/Callback.php';
 
 class ConnectPocketToWordpress
 {
-    /**
-     * This plugin's version number. Used for busting caches.
-     *
-     * @var string
-     */
-    public $version = '1.0.0';
-
-    /**
-     * This plugin's unique slug
-     *
-     * @var string
-     */
-    public $slug = 'connect-pocket-to-website';
-
-    /**
-     * This plugin's prefix
-     *
-     * @var string
-     */
-    private $prefix = 'cptw_';
+    use CPTWTrait;
 
     /**
      * The Api instance
@@ -46,20 +28,6 @@ class ConnectPocketToWordpress
      * @var \JDD\CPTW\Api
      */
     private $api;
-
-    /**
-     * The default admin page url.
-     *
-     * @var string
-     */
-    public $admin_url = '';
-
-    /**
-     * The capability required to access this plugin's settings.
-     *
-     * @var string
-     */
-    public $capability_settings = 'manage_options';
 
     public function __construct()
     {

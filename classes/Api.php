@@ -5,12 +5,8 @@ namespace JDD\CPTW;
 defined( 'ABSPATH' ) || die();
 
 class Api {
-    /**
-     * This plugin's prefix
-     *
-     * @var string
-     */
-    private $prefix = 'cptw_';
+
+    use CPTWTrait;
 
     /**
      * This plugin server's url

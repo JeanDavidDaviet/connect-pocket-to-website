@@ -6,33 +6,15 @@ use function \wp_redirect;
 
 class Callback
 {
+
+    use CPTWTrait;
+
     /**
      * The Api instance
      *
      * @var \JDD\CPTW\Api
      */
     private $api;
-
-    /**
-     * This plugin's unique slug
-     *
-     * @var string
-     */
-    public $slug = 'connect-pocket-to-website';
-
-    /**
-     * The default admin page url.
-     *
-     * @var string
-     */
-    public $admin_url = '';
-
-    /**
-     * The capability required to access this plugin's settings.
-     *
-     * @var string
-     */
-    public $capability_settings = 'manage_options';
 
     public function __construct()
     {
