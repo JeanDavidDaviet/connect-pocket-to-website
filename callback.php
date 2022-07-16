@@ -1,6 +1,6 @@
 <?php
 
-namespace JDD;
+namespace JDD\CPTW;
 
 require dirname(dirname(dirname(dirname((__FILE__))))) . '/wp-load.php';
 
@@ -8,17 +8,12 @@ defined('ABSPATH') || die();
 
 require_once dirname( __FILE__ ) . '/classes/Api.php';
 
-/**
- * Main plugin class.
- *
- * @since 1.0.0
- */
 class Callback
 {
     /**
      * The Api instance
      *
-     * @var \JDD\Api
+     * @var \JDD\CPTW\Api
      */
     private $api;
 

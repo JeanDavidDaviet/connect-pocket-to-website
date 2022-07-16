@@ -1,14 +1,9 @@
 <?php
 
-namespace JDD;
+namespace JDD\CPTW;
 
 defined( 'ABSPATH' ) || die();
 
-/**
- * Main plugin class.
- *
- * @since 1.0.0
- */
 class Api {
     /**
      * This plugin's prefix

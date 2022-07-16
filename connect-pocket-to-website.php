@@ -4,31 +4,26 @@ Plugin Name: Connect Pocket To Website
 Plugin URI: https://wordpress.org/plugins/connect-pocket-to-website/
 Description: This plugin allows you to display your Pocket list into your WordPress site
 Author: Jean-David Daviet
-Version: 1.0
+Version: 1.0.0
 Author URI: https://jeandaviddaviet.fr
 Text Domain: connect-pocket-to-website
 */
 
-namespace JDD;
+namespace JDD\CPTW;
 
 defined('ABSPATH') || die();
 
 require_once dirname( __FILE__ ) . '/classes/Settings.php';
 require_once dirname( __FILE__ ) . '/classes/Api.php';
 
-/**
- * Main plugin class.
- *
- * @since 1.0.0
- */
-class PocketToWordpress
+class ConnectPocketToWordpress
 {
     /**
      * This plugin's version number. Used for busting caches.
      *
      * @var string
      */
-    public $version = '0.0.1';
+    public $version = '1.0.0';
 
     /**
      * This plugin's prefix
@@ -40,7 +35,7 @@ class PocketToWordpress
     /**
      * The Api instance
      *
-     * @var \JDD\Api
+     * @var \JDD\CPTW\Api
      */
     private $api;
 
@@ -100,7 +95,7 @@ class PocketToWordpress
 
         //Get the active tab from the $_GET param
         $default_tab = null;
-        $tab = isset($_GET['tab']) ? $_GET['tab'] : $default_tab;
+        $tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : $default_tab;
 
         $tab_url = admin_url('options-general.php?page=connect-pocket-to-website');
 
@@ -110,9 +105,9 @@ class PocketToWordpress
             <h1><?php _e('Connect Pocket To Website Settings', 'connect-pocket-to-website'); ?></h1>
 
             <nav class="nav-tab-wrapper">
-                <a href="<?php echo $tab_url; ?>" class="nav-tab <?php if($tab===null):?>nav-tab-active<?php endif; ?>"><?php _e('Connection', 'connect-pocket-to-website'); ?></a>
-                <a href="<?php echo $tab_url; ?>&tab=howto" class="nav-tab <?php if($tab==='howto'):?>nav-tab-active<?php endif; ?>"><?php _e('How-to', 'connect-pocket-to-website'); ?></a>
-                <a href="<?php echo $tab_url; ?>&tab=display" class="nav-tab <?php if($tab==='display'):?>nav-tab-active<?php endif; ?>"><?php _e('Display', 'connect-pocket-to-website'); ?></a>
+                <a href="<?php echo esc_attr($tab_url); ?>" class="nav-tab <?php if($tab===null):?>nav-tab-active<?php endif; ?>"><?php _e('Connection', 'connect-pocket-to-website'); ?></a>
+                <a href="<?php echo esc_attr($tab_url); ?>&tab=howto" class="nav-tab <?php if($tab==='howto'):?>nav-tab-active<?php endif; ?>"><?php _e('How-to', 'connect-pocket-to-website'); ?></a>
+                <a href="<?php echo esc_attr($tab_url); ?>&tab=display" class="nav-tab <?php if($tab==='display'):?>nav-tab-active<?php endif; ?>"><?php _e('Display', 'connect-pocket-to-website'); ?></a>
             </nav>
 
             <div class="tab-content">
@@ -228,4 +223,4 @@ class PocketToWordpress
     }
 }
 
-new PocketToWordpress();
+new ConnectPocketToWordpress();
