@@ -65,12 +65,20 @@ class ConnectPocketToWordpress
         register_activation_hook(__FILE__, [$this, 'activate']);
         register_deactivation_hook(__FILE__, [$this, 'deactivate']);
 
+        $this->admin_url = 'options-general.php?page=' . $this->slug;
         $this->api = new Api();
         new Settings();
 
         add_action('admin_menu', [$this, 'register_settings_page']);
+        add_action( 'admin_enqueue_scripts', [$this, 'admin_enqueue_scripts']);
 
         add_shortcode('connect-pocket-to-website', [$this, 'cptw_shortcode']);
+    }
+
+    public function admin_enqueue_scripts()
+    {
+        wp_enqueue_style( $this->prefix . 'admin_css', plugin_dir_url(__FILE__) . 'assets/' . $this->slug . '.css', [], $this->version );
+        wp_enqueue_script( $this->prefix . 'admin_js', plugin_dir_url(__FILE__) . 'assets/' . $this->slug . '.js', [], $this->version, true );
     }
 
     public function register_settings_page()
@@ -149,21 +157,6 @@ class ConnectPocketToWordpress
                     </form>
 
                     <?php if(!empty($this->api->get_consumer_key())): ?>
-
-                        <style>.pocket-btn{
-                                padding: 12px 12px 12px 45px;
-                                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-16.04235 -23.82925 139.0337 142.9755'%3E%3Cpath d='M84.058 39.778L58.54 63.794c-1.313 1.501-3.377 2.065-4.878 2.065-1.876 0-3.752-.564-5.253-2.065L23.266 39.778c-2.627-2.814-3.002-7.505 0-10.507 2.814-2.627 7.505-3.002 10.32 0l20.076 19.325 20.452-19.325c2.627-3.002 7.317-2.627 9.944 0 2.627 3.002 2.627 7.693 0 10.507M97.005 0H10.32C4.691 0 0 4.316 0 9.945v32.084c0 29.083 24.016 53.288 53.662 53.288 29.458 0 53.287-24.205 53.287-53.288V9.945c0-5.629-4.503-9.945-9.944-9.945' fill='%23EF4056'/%3E%3C/svg%3E");
-                                background-repeat: no-repeat;
-                                background-position: 10px center;
-                                background-color: white;
-                                background-size: 30px;
-                                border: 1px solid #cccccc;
-                                border-radius: 3px;
-                                cursor: pointer;
-                                transition: color .15s;
-                            }.pocket-btn:hover, .pocket-btn:focus {
-                                 color: #ee4055;
-                             }</style>
 
                         <?php if(empty($this->api->get_access_token())): ?>
                             <form>

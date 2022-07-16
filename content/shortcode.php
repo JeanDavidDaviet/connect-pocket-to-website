@@ -1,4 +1,3 @@
-<style>.shortcode_creator_group ul { padding-left: 10px; }</style>
 <h2><?php esc_html_e('How to display a feed on your WordPress site', 'connect-pocket-to-website'); ?></h2>
 <p><?php printf(__('This plugin gives you the possibility to display a list of feed via the use of %1$sshortcodes%2$s.', 'connect-pocket-to-website'), '<a href="https://wordpress.com/support/shortcodes/" target="_blank">', '</a>'); ?><br />
     <?php esc_html_e('Then paste it wherever you want in your WordPress website.', 'connect-pocket-to-website'); ?></p>
@@ -111,27 +110,3 @@
         <input type="number" name="offset" step="1" min="0">
     </div>
 </div>
-
-<script>
-    const shortcodeDisplay = document.getElementById('shortcode_display');
-    Array.from(document.querySelectorAll('.shortcode_creator input')).forEach(input => {
-        input.addEventListener('change', calculateShortcode)
-    });
-    function calculateShortcode(){
-        let shortcode = '';
-
-        Array.from(document.querySelectorAll('.shortcode_creator input[type="radio"]')).forEach(input => {
-            if(input.checked && input.value !== 'on'){
-                shortcode += ` ${input.name}="${input.value}"`;
-            }
-        });
-
-        Array.from(document.querySelectorAll('.shortcode_creator input[type="text"], .shortcode_creator input[type="number"]')).forEach(input => {
-            if(input.value.trim() !== ''){
-                shortcode += ` ${input.name}="${input.value.trim()}"`;
-            }
-        });
-
-        shortcodeDisplay.value = `[connect-pocket-to-website${shortcode}]`;
-    }
-</script>
