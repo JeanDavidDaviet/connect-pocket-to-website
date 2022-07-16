@@ -4,6 +4,13 @@ namespace JDD\CPTW;
 
 class Settings
 {
+    /**
+     * This plugin's unique slug
+     *
+     * @var string
+     */
+    public $slug = 'connect-pocket-to-website';
+
     public function __construct()
     {
         add_action('admin_init', [$this, 'settings_init']);
@@ -18,14 +25,14 @@ class Settings
             'cptw_section1',
             '',
             '__return_false',
-            'connect-pocket-to-website'
+            $this->slug
         );
 
         add_settings_field(
             'cptw_consumer_key',
-            esc_html__('Consumer Key', 'connect-pocket-to-website'),
+            esc_html__('Consumer Key', $this->slug),
             [$this, 'cptw_consumer_key'],
-            'connect-pocket-to-website',
+            $this->slug,
             'cptw_section1'
         );
         register_setting('cptw_section1', 'cptw_consumer_key');

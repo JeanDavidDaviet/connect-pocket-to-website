@@ -47,7 +47,7 @@ class Callback
             'Connect Pocket To Website Callback Page',
             'Connect Pocket To Website2',
             $this->capability_settings,
-            'connect-pocket-to-website2',
+            $this->slug . '2',
             [$this, 'display_cptw_setting_page_callback2']
         );
     }
@@ -85,19 +85,19 @@ class Callback
 
     private function handle_error($status)
     {
-        $error_message = __('Something wrong happened', 'connect-pocket-to-website');
+        $error_message = __('Something wrong happened', $this->slug);
         // user denied access
         if($status === 400){
-            $error_message = __('Invalid request, please make sure you follow the documentation for proper syntax', 'connect-pocket-to-website');
+            $error_message = __('Invalid request, please make sure you follow the documentation for proper syntax', $this->slug);
         }
         if($status === 401){
-            $error_message = __('Problem authenticating the user', 'connect-pocket-to-website');
+            $error_message = __('Problem authenticating the user', $this->slug);
         }
         if($status === 403){
-            $error_message = __('User was authenticated, but access denied due to lack of permission or rate limiting', 'connect-pocket-to-website');
+            $error_message = __('User was authenticated, but access denied due to lack of permission or rate limiting', $this->slug);
         }
         if($status === 503){
-            $error_message = __('Pocket\'s sync server is down for scheduled maintenance.', 'connect-pocket-to-website');
+            $error_message = __('Pocket\'s sync server is down for scheduled maintenance.', $this->slug);
         }
         $this->api->set_auth_error([
             'status' => $status,

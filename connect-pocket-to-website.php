@@ -74,7 +74,7 @@ class ConnectPocketToWordpress
         add_action('admin_menu', [$this, 'register_settings_page']);
         add_action( 'admin_enqueue_scripts', [$this, 'admin_enqueue_scripts']);
 
-        add_shortcode('connect-pocket-to-website', [$this, 'cptw_shortcode']);
+        add_shortcode($this->slug, [$this, 'cptw_shortcode']);
     }
 
     public function admin_enqueue_scripts()
@@ -89,7 +89,7 @@ class ConnectPocketToWordpress
             'Connect Pocket To Website Settings Page',
             'Connect Pocket To Website',
             $this->capability_settings,
-            'connect-pocket-to-website',
+            $this->slug,
             [$this, 'display_cptw_setting_page_callback']
         );
     }
@@ -126,35 +126,35 @@ class ConnectPocketToWordpress
         ?>
         <div class="wrap">
 
-            <h1><?php esc_html_e('Connect Pocket To Website Settings', 'connect-pocket-to-website'); ?></h1>
+            <h1><?php esc_html_e('Connect Pocket To Website Settings', $this->slug); ?></h1>
 
             <nav class="nav-tab-wrapper">
-                <a href="<?php echo esc_attr($tab_url); ?>" class="nav-tab <?php if($tab===null):?>nav-tab-active<?php endif; ?>"><?php esc_html_e('Connection', 'connect-pocket-to-website'); ?></a>
-                <a href="<?php echo esc_attr($tab_url); ?>&tab=howto" class="nav-tab <?php if($tab==='howto'):?>nav-tab-active<?php endif; ?>"><?php esc_html_e('How-to', 'connect-pocket-to-website'); ?></a>
-                <a href="<?php echo esc_attr($tab_url); ?>&tab=display" class="nav-tab <?php if($tab==='display'):?>nav-tab-active<?php endif; ?>"><?php esc_html_e('Display', 'connect-pocket-to-website'); ?></a>
+                <a href="<?php echo esc_attr($tab_url); ?>" class="nav-tab <?php if($tab===null):?>nav-tab-active<?php endif; ?>"><?php esc_html_e('Connection', $this->slug); ?></a>
+                <a href="<?php echo esc_attr($tab_url); ?>&tab=howto" class="nav-tab <?php if($tab==='howto'):?>nav-tab-active<?php endif; ?>"><?php esc_html_e('How-to', $this->slug); ?></a>
+                <a href="<?php echo esc_attr($tab_url); ?>&tab=display" class="nav-tab <?php if($tab==='display'):?>nav-tab-active<?php endif; ?>"><?php esc_html_e('Display', $this->slug); ?></a>
             </nav>
 
             <div class="tab-content">
                 <?php if($tab === null): ?>
                     <form action="<?php echo esc_attr(admin_url('options.php')); ?>" method="post">
                         <?php
-                        do_settings_sections('connect-pocket-to-website');
+                        do_settings_sections($this->slug);
                         settings_fields('cptw_section1');
                         if(!empty($this->api->get_consumer_key())):
                             ?>
                             <table class="form-table" role="presentation">
                                 <tr>
-                                    <th scope="row"><?php esc_html_e('Request Code', 'connect-pocket-to-website'); ?></th>
+                                    <th scope="row"><?php esc_html_e('Request Code', $this->slug); ?></th>
                                     <td><p><?php echo esc_html($this->api->get_request_code()); ?></p></td>
                                 </tr>
                                 <tr>
-                                    <th scope="row"><?php esc_html_e('Access Token', 'connect-pocket-to-website'); ?></th>
+                                    <th scope="row"><?php esc_html_e('Access Token', $this->slug); ?></th>
                                     <td><p><?php echo esc_html($this->api->get_access_token()); ?></p></td>
                                 </tr>
                             </table>
                         <?php
                         endif;
-                        submit_button(esc_html__('Save Settings', 'connect-pocket-to-website'));
+                        submit_button(esc_html__('Save Settings', $this->slug));
                         ?>
                     </form>
 
@@ -162,18 +162,18 @@ class ConnectPocketToWordpress
 
                         <?php if(empty($this->api->get_access_token())): ?>
                             <form>
-                                <input type="submit" class="pocket-btn" value="<?php echo esc_attr(__('Login with Pocket', 'connect-pocket-to-website')); ?>">
+                                <input type="submit" class="pocket-btn" value="<?php echo esc_attr(__('Login with Pocket', $this->slug)); ?>">
                                 <input type="hidden" name="login" value="true">
-                                <input type="hidden" name="page" value="connect-pocket-to-website">
+                                <input type="hidden" name="page" value="<?php echo esc_attr($this->slug); ?>">
                             </form>
                         <?php
                         endif;
 
                         if(!empty($this->api->get_access_token())): ?>
                             <form>
-                                <input type="submit" class="pocket-btn" value="<?php echo esc_attr(__('Disconnect from Pocket', 'connect-pocket-to-website')); ?>">
+                                <input type="submit" class="pocket-btn" value="<?php echo esc_attr(__('Disconnect from Pocket', $this->slug)); ?>">
                                 <input type="hidden" name="logout" value="true">
-                                <input type="hidden" name="page" value="connect-pocket-to-website">
+                                <input type="hidden" name="page" value="<?php echo esc_attr($this->slug); ?>">
                             </form>
                         <?php
                         endif;
