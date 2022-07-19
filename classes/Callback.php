@@ -18,26 +18,17 @@ class Callback
 
     public function __construct()
     {
-        add_action('admin_menu', [$this, 'register_callback_page']);
         $this->admin_url = 'options-general.php?page=' . $this->slug;
         $this->api = new Api();
+        $this->handle_callback_get();
     }
 
-    public function register_callback_page()
+    public function handle_callback_get()
     {
-        add_options_page(
-            'Connect Pocket To Website Callback Page',
-            'Connect Pocket To Website2',
-            $this->capability_settings,
-            $this->slug . '2',
-            [$this, 'display_cptw_setting_page_callback2']
-        );
-    }
-
-    public function display_cptw_setting_page_callback2()
-    {
-        $this->handle_response();
+        if(isset($_GET['callback']) && sanitize_text_field($_GET['callback']) === 'pocket'){
+            $this->handle_response();
         }
+    }
 
     private function handle_response()
     {
@@ -52,9 +43,7 @@ class Callback
         }else{
             $this->handle_success($response);
         }
-        var_dump($status);
-        die;
-        header( "Location: " . admin_url($this->admin_url), true, 302 );
+        wp_redirect(admin_url($this->admin_url));
         exit;
     }
 

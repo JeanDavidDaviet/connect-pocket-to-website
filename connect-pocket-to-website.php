@@ -34,15 +34,18 @@ class ConnectPocketToWordpress
         register_activation_hook(__FILE__, [$this, 'activate']);
         register_deactivation_hook(__FILE__, [$this, 'deactivate']);
 
-        $this->admin_url = 'options-general.php?page=' . $this->slug;
-        $this->api = new Api();
-        new Callback();
-        new Settings();
-
+        add_action('admin_init', [$this, 'admin_init']);
         add_action('admin_menu', [$this, 'register_settings_page']);
         add_action( 'admin_enqueue_scripts', [$this, 'admin_enqueue_scripts']);
-
         add_shortcode($this->slug, [$this, 'cptw_shortcode']);
+        $this->api = new Api();
+        new Settings();
+    }
+
+    public function admin_init()
+    {
+        $this->admin_url = 'options-general.php?page=' . $this->slug;
+        new Callback();
     }
 
     public function admin_enqueue_scripts()
