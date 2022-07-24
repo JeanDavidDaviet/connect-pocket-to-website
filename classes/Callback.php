@@ -18,7 +18,7 @@ class Callback
 
     public function __construct()
     {
-        $this->admin_url = 'options-general.php?page=' . $this->slug;
+        $this->admin_url = admin_url('options-general.php?page=' . $this->slug);
         $this->api = new Api();
         $this->handle_callback_get();
     }
@@ -43,7 +43,7 @@ class Callback
         }else{
             $this->handle_success($response);
         }
-        wp_redirect(admin_url($this->admin_url));
+        wp_redirect($this->admin_url);
         exit;
     }
 

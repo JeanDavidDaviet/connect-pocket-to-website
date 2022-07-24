@@ -4,7 +4,7 @@ Plugin Name: Connect Pocket To Website
 Plugin URI: https://wordpress.org/plugins/connect-pocket-to-website/
 Description: This plugin allows you to display your Pocket list into your WordPress site
 Author: Jean-David Daviet
-Version: 1.0.0
+Version: 1.0.1
 Author URI: https://jeandaviddaviet.fr
 Text Domain: connect-pocket-to-website
 */
@@ -44,7 +44,7 @@ class ConnectPocketToWordpress
 
     public function admin_init()
     {
-        $this->admin_url = 'options-general.php?page=' . $this->slug;
+        $this->admin_url = admin_url('options-general.php?page=' . $this->slug);
         new Callback();
     }
 
@@ -76,7 +76,7 @@ class ConnectPocketToWordpress
             $this->api->set_access_token(null);
             $this->api->set_auth_error(null);
             // todo add notification of failure
-            wp_redirect(admin_url($this->admin_url));
+            wp_redirect($this->admin_url);
             exit;
         }
 
@@ -92,17 +92,15 @@ class ConnectPocketToWordpress
         $default_tab = null;
         $tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : $default_tab;
 
-        $tab_url = admin_url($this->admin_url);
-
         ?>
         <div class="wrap">
 
             <h1><?php esc_html_e('Connect Pocket To Website Settings', $this->slug); ?></h1>
 
             <nav class="nav-tab-wrapper">
-                <a href="<?php echo esc_attr($tab_url); ?>" class="nav-tab <?php if($tab===null):?>nav-tab-active<?php endif; ?>"><?php esc_html_e('Connection', $this->slug); ?></a>
-                <a href="<?php echo esc_attr($tab_url); ?>&tab=howto" class="nav-tab <?php if($tab==='howto'):?>nav-tab-active<?php endif; ?>"><?php esc_html_e('How-to', $this->slug); ?></a>
-                <a href="<?php echo esc_attr($tab_url); ?>&tab=display" class="nav-tab <?php if($tab==='display'):?>nav-tab-active<?php endif; ?>"><?php esc_html_e('Display', $this->slug); ?></a>
+                <a href="<?php echo esc_attr($this->admin_url); ?>" class="nav-tab <?php if($tab === null):?>nav-tab-active<?php endif; ?>"><?php esc_html_e('Connection', $this->slug); ?></a>
+                <a href="<?php echo esc_attr($this->admin_url); ?>&tab=howto" class="nav-tab <?php if($tab === 'howto'):?>nav-tab-active<?php endif; ?>"><?php esc_html_e('How-to', $this->slug); ?></a>
+                <a href="<?php echo esc_attr($this->admin_url); ?>&tab=display" class="nav-tab <?php if($tab === 'display'):?>nav-tab-active<?php endif; ?>"><?php esc_html_e('Display', $this->slug); ?></a>
             </nav>
 
             <div class="tab-content">

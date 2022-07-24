@@ -3,7 +3,7 @@ Contributors: jean-david
 Tags: pocket, list, reading, later
 Requires at least: 3.1.0
 Tested up to: 6.0.1
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -35,6 +35,9 @@ The source code for this plugin is available on [GitHub](https://github.com/Jean
 6. Settings - Tutorial to help create the Pocket API application
 
 == ChangeLog ==
+
+= Version 1.0.1 =
+* Fix hardcoded redirect_uri value and default admin_url
 
 = Version 1.0.0 =
 * Initial release.
